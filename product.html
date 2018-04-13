@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+
+	<h1>输出一个变量:{{}}</h1>
+	<div id="productTitle">
+		<p>{{product}}</p>
+	</div>
+	<script type="text/javascript">
+		var vm1 = new Vue({
+		
+			el: "#productTitle",
+
+			data: {
+				product : "boot"
+			}
+		
+		})
+	</script>
+
+	<h1>输出一组变量:v-for</h1>
+	<div id="productInfo">
+		<ul>
+			<li v-for = "product in products">{{product}}</li>
+		</ul>
+	</div>
+	<script type="text/javascript">
+		var vm2 = new Vue({
+		
+			el: "#productInfo",
+
+			data: {
+				products : [
+					"foot",
+					"leg"
+				]
+			}
+		
+		})
+	</script>
+
+	<h1>显示json数据，加入判断:v-if</h1>
+	<div id="productSql">
+		<ul>
+			<li v-for = "product in products">
+				{{product.name}}  
+				<span v-if = "product.num != 0">{{product.num}}</span>
+				<span v-if = "product.num === 0">- out of stock</span>
+			</li>
+		</ul>
+	</div>
+	<script type="text/javascript">
+		var vm3 = new Vue({
+		
+			el: "#productSql",
+
+			data: {
+				products:[
+					{"name":"nike","num":1299},
+					{"name":"adidas","num":1399},
+					{"name":"converse","num":0}
+				]
+			}
+			
+		
+		})
+	</script>
+	<!-- 如何连接数据库 -->
+
+
+	<h1>总数:computed</h1>
+	<div id="productTotal">
+		<ul>
+			<li v-for = "product in products">
+				{{product.name}}
+				<span v-if = "product.num !=0">{{product.num}}</span>
+				<span v-if = "product.num === 0">- out of stock</span>
+			</li>
+		</ul>
+		<p>TotalNum: {{totalProduct}}</p>
+	</div>
+	<script type="text/javascript">
+		var vm4 = new Vue({
+		
+			el: "#productTotal",
+
+			data: {
+				products: [
+					{"name":"nike","num":1000},
+					{"name":"adidas","num":2000}
+				]
+			},
+
+			computed: {
+				totalProduct(){
+					return this.products.reduce(
+						(sum,product)=>{
+							return sum + product.num
+						}
+					,0)
+				}
+			}
+		})
+	</script>
+	<!-- 看不懂 -->
+
+	<h1>事件:v-on:click</h1>
+	<div id="productShow">
+		<ul>
+			<li v-for = "product in products">
+				{{product.name}}
+				<span v-if = "product.num !=0 ">{{product.num}}</span>
+				<span v-if = "product.num ===0 ">-  out of stock</span>
+			</li> 
+		</ul>
+		<button v-on:click = "showProducts">显示商品</button>
+	</div>
+	<script type="text/javascript">
+		var vm5 = new Vue({
+		
+			el: "#productShow",
+
+			data: {
+				products:[
+					{"name":"nike","num":1200},
+					{"name":"adidas","num":1300}
+				]
+			},
+
+			methods: {
+				showProducts : function(){
+					alert(123);
+
+				}
+			}
+
+		
+		})
+	</script>
+	<!-- 如何点击显示商品 -->
+
+	<h1>双向绑定:v-model</h1>
+	<div id="ShowModel">
+		{{Model}}
+		<br/>
+		<input v-model = "Model">
+	</div>
+	<script type="text/javascript">
+		var vm6 = new Vue({
+		
+			el: "#ShowModel",
+
+			data: {
+				Model : "Show Model"
+			}
+		})
+	</script>
+
+
+	<h1>简单静态组件:Vue.component</h1>
+	<div id="vm7">
+		<vm-component></vm-component>
+	</div>
+	<script type="text/javascript">
+		Vue.component('vm-component',{template:"<p>123</p>"})
+
+		var vm7 = new Vue({
+		
+			el: "#vm7"
+
+		})
+	</script>
+
+	<h1>动态组件v-bind</h1>
+	<div id="vm8">
+		<ul>
+			<!-- 其实就是组件与数据绑定的一个过程 -->
+			<item-list 
+				v-for = "product in productList"
+				v-bind:item = "product"
+			></item-list>
+		</ul>
+	</div>
+	<script type="text/javascript">
+		// 注意组件名不能有大写，多用-
+		 Vue.component('item-list',{
+		 	props: ['item'],
+		 	template: "<li>{{item.name}} {{item.num}}</li>"
+		 })
+
+		 var vm8 = new Vue({
+		 
+		 	el: "#vm8",
+
+		 	data: {
+		 		productList: [
+		 			{"name":"nike","num":1300},
+		 			{"name":"adidas","num":1200}
+		 		]
+		 	}
+		 
+		 })
+	</script>
+
+	<h1>两种方式绑定a标签href</h1>
+	<div id="HREF">
+		<a v-bind:href ="url">v-bind</a>
+		<a v-on:click ="doNothing">v-on</a>
+	</div>
+	<script type="text/javascript">
+		var vm9 = new Vue({
+		
+			el: "#HREF",
+
+			data:{
+				url:"http://www.baidu.com/"
+			},
+
+			methods:{
+				doNothing:function(){
+					window.location.href="http://www.baidu.com/";
+				}
+			}
+		
+		})
+	</script>
+	<!-- methods用来放函数 
+		 computed用来放计算，类似立即函数
+	-->
+
+	<h1>监听器</h1>
+	<div id="vm10">
+		<input v-model = "listen">
+		{{status}}
+	</div>
+	<script type="text/javascript">
+		var vm10 = new Vue({
+		
+			el: "#vm10",
+
+			data:{
+				listen : "change me",
+				status : "none",
+				select : "1"
+			},
+
+			watch:{
+				listen:function(){
+					this.status = "Someone changes this input"
+				}
+			}
+		})
+	</script>
+	<!-- 通过watch就可以监听input的状态 注意listen要初始化
+		 v-model用于表单控件，双向绑定 input select textarea等等
+	-->
+
+	<h1>动态改变Class</h1>
+	<div id="vm11">
+		
+	</div>
+	<script type="text/javascript">
+		
+	</script>
+
+
+
+
+
+
+</body>
+</html>
